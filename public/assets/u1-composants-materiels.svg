@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1f2937" flood-opacity="0.16"/></filter>
+  </defs>
+  <rect width="1000" height="620" rx="34" fill="#f7fbff"/>
+  <rect x="34" y="34" width="932" height="552" rx="28" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="70" y="92" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#153e75">Composants matériels</text>
+  <text x="70" y="130" font-family="Arial, sans-serif" font-size="22" fill="#4b5563">Les éléments visibles du poste informatique</text>
+
+  <rect x="90" y="210" width="240" height="130" rx="22" fill="#E7F3FF" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="210" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Unité centrale</text>
+  <text x="210" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#334155">traitement</text>
+
+  <rect x="380" y="210" width="240" height="130" rx="22" fill="#EAF7EF" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="500" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Écran</text>
+  <text x="500" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#334155">affichage</text>
+
+  <rect x="670" y="210" width="240" height="130" rx="22" fill="#FFF3DF" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="790" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Clavier</text>
+  <text x="790" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#334155">saisie</text>
+
+  <rect x="90" y="410" width="240" height="130" rx="22" fill="#F4EAFE" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="210" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Souris</text>
+  <text x="210" y="496" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#334155">pointage</text>
+
+  <rect x="380" y="410" width="240" height="130" rx="22" fill="#FFECEF" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="500" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Imprimante</text>
+  <text x="500" y="496" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#334155">papier</text>
+
+  <rect x="670" y="410" width="240" height="130" rx="22" fill="#ECFDF5" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="790" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Mémoire</text>
+  <text x="790" y="496" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#334155">stockage</text>
+
+</svg>

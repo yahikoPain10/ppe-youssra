@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Edu Libre logo">
+<defs>
+  <linearGradient id="bg" x1="24" y1="18" x2="226" y2="232" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#eef7ff"/>
+    <stop offset="1" stop-color="#ffffff"/>
+  </linearGradient>
+  <linearGradient id="g" x1="51" y1="48" x2="206" y2="214" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2f80ed"/>
+    <stop offset="0.55" stop-color="#5b5ce2"/>
+    <stop offset="1" stop-color="#00b894"/>
+  </linearGradient>
+</defs>
+<rect x="12" y="12" width="232" height="232" rx="54" fill="url(#bg)"/>
+<rect x="18" y="18" width="220" height="220" rx="49" fill="none" stroke="#dbeafe" stroke-width="4"/>
+<path d="M62 76c35-18 65-18 98 0v92c-33-14-63-14-98 0V76z" fill="#ffffff" stroke="#2f80ed" stroke-width="10" stroke-linejoin="round"/>
+<path d="M160 76c13-7 26-10 42-10v92c-16 0-29 3-42 10V76z" fill="#eff6ff" stroke="#00b894" stroke-width="10" stroke-linejoin="round"/>
+<path d="M81 102h55M81 124h47M81 146h57" stroke="#94a3b8" stroke-width="8" stroke-linecap="round"/>
+<circle cx="183" cy="116" r="18" fill="#ffd166"/>
+<path d="M128 47l69 31-69 31-69-31 69-31z" fill="url(#g)"/>
+<path d="M194 80v32" stroke="#1e293b" stroke-width="7" stroke-linecap="round"/>
+<circle cx="194" cy="119" r="7" fill="#1e293b"/>
+<text x="128" y="208" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="900" fill="#253b8f">EL</text>
+</svg>

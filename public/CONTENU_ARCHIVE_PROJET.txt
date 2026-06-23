@@ -1,0 +1,29 @@
+ÉPI v230 — archive complète
+
+Cette archive contient toute l'application, pas seulement index.html.
+Fichiers principaux :
+- index.html
+- styles.css
+- app.js
+- content-data.js
+- dynamic-app.js
+- teacher-content-manager.js
+- server.js
+- server-storage.js
+- package.json
+- assets/
+- data/
+- correctifs v206 à v225
+- v230-final-modifier-unite-eleve-simple.js
+
+Modifications finales :
+1) Espace élève compact.
+2) Espace prof plus fixe et moins chargé.
+3) Modifier unité affiche l'unité comme dans l'espace élève, avec boutons Ajouter / Supprimer sur les composants.
+4) Design violet et blanc.
+
+Lancement :
+cd EPI-v230-application-complete
+npm install
+node server.js
+Puis ouvrir http://localhost:3000

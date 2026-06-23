@@ -1,0 +1,25 @@
+COMMENT LANCER LE PROJET EPI
+
+Methode simple sur Windows :
+1. Extraire le fichier ZIP dans un dossier normal.
+2. Ouvrir le dossier extrait.
+3. Double-cliquer sur : LANCER_PROJET.bat
+4. Le navigateur va s'ouvrir sur : http://localhost:3000
+
+Important :
+- Il ne faut pas lancer le projet directement depuis le fichier ZIP.
+- Il faut d'abord extraire/decompresser le ZIP.
+- Il faut garder la fenetre noire ouverte pendant l'utilisation du site.
+- Pour arreter le projet : CTRL + C dans la fenetre noire.
+
+Si le port 3000 est deja utilise :
+1. Fermer les anciennes fenetres CMD qui lancent le projet.
+2. Relancer LANCER_PROJET.bat.
+
+Methode manuelle :
+1. Ouvrir CMD dans le dossier du projet.
+2. Ecrire : node server.js
+3. Ouvrir : http://localhost:3000
+
+Mot de passe professeur par defaut :
+EduLibre2026

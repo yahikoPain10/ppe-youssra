@@ -1,0 +1,165 @@
+.
+├── COMMENT_LANCER_LE_PROJET.txt
+├── CONTENU_ARCHIVE_PROJET.txt
+├── CONTENU_DU_PROJET_COMPLET.txt
+├── CONTENU_DU_PROJET_MODIFIER_UNITE.txt
+├── EPI_website_analysis_report.md
+├── LANCER_PROJET.bat
+├── README_CORRECTIONS_STYLES_MENU.txt
+├── README_INTERFACE_COMPOSANTS.txt
+├── README_JEU_RACCOURCIS_VRAI_FAUX.txt
+├── README_LANCEMENT_SERVEUR.txt
+├── README_MENU_ELEVE_APROPOS.txt
+├── README_MODIFICATION_UNITE_COMPOSANTS.txt
+├── README_PROJET_COMPLET.txt
+├── README_RACCOURCIS_AJOUTER_MODIFIER.txt
+├── README_RETOUR_MARGES_APROPOS.txt
+├── README_VERIFICATION_INTERFACE_PRO.txt
+├── app.js
+├── assets
+│   ├── application-smartphone.png
+│   ├── auth-bg-classe.png
+│   ├── auth-bg-classe.png.bak
+│   ├── auth-bg-lab-v96.png
+│   ├── auth-bg-lab-v97.png
+│   ├── auth-bg-library-v95.png
+│   ├── auth-bg-students-v94.png
+│   ├── auth-bg-v98.png
+│   ├── auth-students-computers-v100.png
+│   ├── auth-students-computers-v101.png
+│   ├── bureau-windows7-poste-travail.png
+│   ├── connectivite-bluetooth.png
+│   ├── connectivite-usb.png
+│   ├── connectivite-wifi.png
+│   ├── fenetre-agrandir.png
+│   ├── fenetre-exemple-explorateur.png
+│   ├── fenetre-fermer.png
+│   ├── fenetre-reduire.png
+│   ├── home-hero-v99.png
+│   ├── information-donnee-information-connaissance.png
+│   ├── information-type-image-reseau.png
+│   ├── information-type-message-sms.png
+│   ├── informatique-traitement-donnees.png
+│   ├── logiciels-suite-apps.png
+│   ├── logiciels-systemes-exploitation.png
+│   ├── logo-angle-orientation.png
+│   ├── logo-configuration-tortue.png
+│   ├── logo-environment.svg
+│   ├── logo-environnement.png
+│   ├── logo-instruction-av.png
+│   ├── logo-instruction-crayon.png
+│   ├── logo-instruction-fcfg.png
+│   ├── logo-instruction-re.png
+│   ├── logo-instruction-repetition-repete3.png
+│   ├── logo-instruction-repetition-syntax.png
+│   ├── logo-instruction-td.png
+│   ├── logo-instruction-tg.png
+│   ├── logo-instruction-ve.png
+│   ├── logo-menu-configuration.png
+│   ├── logo-primitives.svg
+│   ├── logo-procedures.svg
+│   ├── logo-repeat-ecris-message.png
+│   ├── logo-repeat-procedure-pour.png
+│   ├── logo-repeat.svg
+│   ├── logo.svg
+│   ├── modele-accueil-violet.png
+│   ├── os-systemes-exploitation.png
+│   ├── spreadsheet-cells.svg
+│   ├── spreadsheet-charts.svg
+│   ├── spreadsheet-file.svg
+│   ├── spreadsheet-formatting.svg
+│   ├── spreadsheet-formulas.svg
+│   ├── systeme-informatique-interface.png
+│   ├── tableur-feuilles-ajouter-feuille.png
+│   ├── tableur-feuilles-cellule-adresse.png
+│   ├── tableur-formules-01-definition-formule.png
+│   ├── tableur-formules-02-definition-fonction.png
+│   ├── tableur-formules-03-saisie-formule.png
+│   ├── tableur-formules-04-resultat-formule.png
+│   ├── tableur-formules-05-recopie-poignee.png
+│   ├── tableur-formules-06-recopie-tirer.png
+│   ├── tableur-formules-07-recopie-resultat.png
+│   ├── tableur-gestion-01-nouveau-classeur.jpg
+│   ├── tableur-gestion-02-interface-classeur.jpg
+│   ├── tableur-gestion-03-enregistrer-sous.jpg
+│   ├── tableur-gestion-04-nommer-enregistrer.jpg
+│   ├── tableur-saisie-avant-apres.png
+│   ├── tableur-saisie-bordures.png
+│   ├── tableur-saisie-couleur-remplissage.png
+│   ├── tableur-saisie-styler-tableau.png
+│   ├── tableur-saisie-types-donnees-formule.png
+│   ├── tableur-saisie-types-donnees.png
+│   ├── u1-composants-materiels-poster.png
+│   ├── u1-composants-materiels.svg
+│   ├── u1-information-traitement-news.png
+│   ├── u1-notion-systeme-logiciels.png
+│   ├── u1-notion-systeme-materiels.png
+│   ├── u1-notion-systeme-schema.png
+│   ├── u1-peripheriques-roles.png
+│   ├── u1-peripheriques.svg
+│   ├── u1-systeme-informatique.svg
+│   ├── u1-traitement-information.svg
+│   ├── u2-bureau-fenetres.svg
+│   ├── u2-bureau-windows10.png
+│   ├── u2-bureau-windows7-schema.png
+│   ├── u2-fichiers-creer-dossier.png
+│   ├── u2-fichiers-dossiers.svg
+│   ├── u2-fichiers-explorateur-recherche.png
+│   ├── u2-fichiers-renommer-supprimer.png
+│   ├── u2-os-linux.png
+│   ├── u2-os-macos.png
+│   ├── u2-os-windows7.png
+│   ├── u2-parametres-securite.svg
+│   ├── u2-role-os.svg
+│   ├── units-pastel-bg.png
+│   └── watercolor-units-bg.png
+├── auth-buttons-fix.js
+├── auth-student-access.js
+├── back-button-about-layout.js
+├── clean-components-interface.js
+├── content-data.js
+├── content-storage-fix.js
+├── corrections-finales.js
+├── data
+│   ├── media
+│   │   ├── audios
+│   │   │   └── audio_1782242685245_deb76acc796f.mp3
+│   │   ├── documents
+│   │   ├── images
+│   │   │   ├── image_1781831250372_77d6729c033f.svg
+│   │   │   └── image_1782242591097_9105f84011f3.webp
+│   │   └── videos
+│   ├── media-index.json
+│   └── storage.json
+├── dynamic-app.js
+├── exam-remediation-fix.js
+├── file-structure.txt
+├── index.html
+├── integration-file-submissions.js
+├── interface-stability-fix.js
+├── media-import-fix.js
+├── media-preview-upload-fix.js
+├── package.json
+├── pages-styles-back-navigation.js
+├── performance-boost.js
+├── professional-interface-buttons-check.js
+├── server-storage.js
+├── server.js
+├── shortcut-admin-editor.js
+├── shortcut-true-false-game.js
+├── student-dropdown-about-menu.js
+├── student-interface-fix.js
+├── student-unit-view-clean.js
+├── styles-menu-back-fixes.js
+├── styles.css
+├── teacher-content-manager.js
+├── unit-components-editor.js
+├── unit-edit-compact-styles.js
+├── unit-edit-live-preview.js
+├── unit-edit-scrollable-layout.js
+├── unit-edit-toggle.js
+├── unit-edit-unified-interface.js
+├── unit-media-editor-fix.js
+└── visual-content-fix.js
+
+8 directories, 155 files

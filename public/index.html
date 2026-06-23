@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ÉPI</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .epi-loader{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:linear-gradient(135deg,#f8fafc,#f3e8ff);transition:opacity .28s ease,visibility .28s ease}.epi-loader.hide{opacity:0;visibility:hidden}.epi-loader-card{width:min(360px,calc(100vw - 42px));border:1px solid rgba(109,40,217,.18);border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 18px 40px rgba(76,29,149,.12);padding:18px;text-align:center;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#32106b}.epi-loader-card strong{display:block;font-size:1.05rem;margin-bottom:7px}.epi-loader-bar{height:8px;background:#ede9fe;border-radius:999px;overflow:hidden;margin-top:14px}.epi-loader-bar span{display:block;height:100%;width:45%;border-radius:999px;background:linear-gradient(90deg,#6d28d9,#8b5cf6);animation:epiLoad 1.1s ease-in-out infinite}@keyframes epiLoad{0%{transform:translateX(-110%)}100%{transform:translateX(240%)}}.epi-booting #app{opacity:0}.epi-ready #app{opacity:1;transition:opacity .22s ease}
+  </style>
+</head>
+<body>
+  <noscript>Cette application nécessite JavaScript.</noscript>
+  <div id="epiLoadingScreen" class="epi-loader" aria-live="polite">
+    <div class="epi-loader-card">
+      <strong>Chargement de l’application</strong>
+      <span>Préparation des espaces élève et professeur...</span>
+      <div class="epi-loader-bar"><span></span></div>
+    </div>
+  </div>
+  <div id="app"></div>
+  <script src="performance-boost.js"></script>
+  <script src="server-storage.js"></script>
+  <script src="app.js"></script>
+  <script src="content-data.js"></script>
+  <script src="dynamic-app.js"></script>
+  <script src="teacher-content-manager.js"></script>
+  <script src="media-import-fix.js"></script>
+  <script src="media-preview-upload-fix.js"></script>
+  <script src="interface-stability-fix.js"></script>
+  <script src="content-storage-fix.js"></script>
+  <script src="visual-content-fix.js"></script>
+  <script src="student-interface-fix.js"></script>
+  <script src="exam-remediation-fix.js"></script>
+  <script src="auth-buttons-fix.js"></script>
+  <script src="auth-student-access.js"></script>
+  <script src="clean-components-interface.js"></script>
+  <script src="student-dropdown-about-menu.js"></script>
+  <script src="back-button-about-layout.js"></script>
+  <script src="pages-styles-back-navigation.js"></script>
+  <script src="styles-menu-back-fixes.js"></script>
+  <script src="shortcut-true-false-game.js"></script>
+  <script src="shortcut-admin-editor.js"></script>
+  <script src="professional-interface-buttons-check.js"></script>
+  <script src="corrections-finales.js"></script>
+  <script src="integration-file-submissions.js"></script>
+</body>
+</html>

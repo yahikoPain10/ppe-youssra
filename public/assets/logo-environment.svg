@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-label="Environnement LOGO">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#c2e9fb"/>
+    <stop offset="100%" stop-color="#a1c4fd"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#102040" flood-opacity="0.12"/>
+  </filter>
+</defs>
+<rect width="1200" height="760" rx="40" fill="#f6f8ff"/>
+<rect x="22" y="22" width="1156" height="716" rx="34" fill="url(#bg)" opacity="0.16"/>
+<rect x="50" y="54" width="1100" height="652" rx="34" fill="#ffffff" filter="url(#shadow)"/>
+<text x="88" y="122" font-size="38" font-family="Segoe UI, Arial" font-weight="700" fill="#22304a">Environnement LOGO</text>
+
+<rect x="140" y="180" width="530" height="380" rx="28" fill="#1e293b"/>
+<rect x="165" y="205" width="480" height="330" rx="18" fill="#f8fafc"/>
+<circle cx="405" cy="370" r="34" fill="#22c55e"/>
+<path d="M390 370h30M405 355v30" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+<path d="M404 370l48-30" stroke="#2563eb" stroke-width="10" stroke-linecap="round"/>
+<polygon points="460,340 442,341 451,356" fill="#2563eb"/>
+<rect x="735" y="200" width="300" height="280" rx="24" fill="#eef2ff" stroke="#c7d2fe"/>
+<text x="885" y="255" font-size="30" font-family="Segoe UI, Arial" font-weight="700" fill="#2563eb" text-anchor="middle">LOGO</text>
+<text x="780" y="320" font-size="24" font-family="Consolas, monospace" fill="#334155">AV 50</text>
+<text x="780" y="360" font-size="24" font-family="Consolas, monospace" fill="#334155">TD 90</text>
+<text x="780" y="400" font-size="24" font-family="Consolas, monospace" fill="#334155">REPETE 4 [ ... ]</text>
+
+</svg>

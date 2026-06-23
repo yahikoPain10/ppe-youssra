@@ -1,0 +1,23 @@
+PROJET COMPLET EPI v234
+
+Cette archive contient le projet complet, pas seulement index.html.
+Fichiers principaux à vérifier après extraction :
+- index.html
+- styles.css
+- app.js
+- content-data.js
+- dynamic-app.js
+- teacher-content-manager.js
+- server.js
+- server-storage.js
+- package.json
+- README_LANCEMENT_SERVEUR.txt
+- dossier assets/
+- dossier data/
+- scripts correctifs v206 à v233
+
+Lancement :
+1) ouvrir le terminal dans ce dossier
+2) npm install
+3) node server.js
+4) ouvrir http://localhost:3000

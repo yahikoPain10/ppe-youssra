@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+<rect width="1000" height="620" rx="34" fill="#e8f2ff"/>
+<rect x="55" y="50" width="890" height="515" rx="26" fill="#ffffff" filter="url(#s)"/>
+<defs><filter id="s"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.15"/></filter></defs>
+<text x="86" y="106" font-family="Arial" font-size="38" font-weight="700" fill="#153e75">Bureau du système d’exploitation</text>
+<rect x="90" y="145" width="820" height="350" rx="18" fill="#dbeafe" stroke="#93c5fd"/>
+<rect x="110" y="465" width="780" height="30" rx="10" fill="#1e40af" opacity="0.85"/>
+<rect x="135" y="185" width="70" height="70" rx="14" fill="#ffffff" stroke="#60a5fa"/><text x="170" y="275" text-anchor="middle" font-family="Arial" font-size="17">Icône</text>
+<rect x="250" y="185" width="70" height="70" rx="14" fill="#ffffff" stroke="#60a5fa"/><text x="285" y="275" text-anchor="middle" font-family="Arial" font-size="17">Dossier</text>
+<rect x="135" y="315" width="70" height="70" rx="14" fill="#ffffff" stroke="#60a5fa"/><text x="170" y="405" text-anchor="middle" font-family="Arial" font-size="17">Corbeille</text>
+<rect x="545" y="195" width="300" height="210" rx="16" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<rect x="545" y="195" width="300" height="36" rx="16" fill="#bfdbfe"/><text x="695" y="219" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700">Fenêtre</text>
+<text x="500" y="535" text-anchor="middle" font-family="Arial" font-size="22" fill="#334155">Icônes + fenêtres + barre des tâches = espace de travail</text>
+</svg>
