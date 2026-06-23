@@ -39,6 +39,7 @@ app.use('/api/teacher-auth',     express.json({ limit: '16kb' }));
 app.use('/api/teacher-password', express.json({ limit: '32kb' }));
 app.use('/api/media',            express.json({ limit: '500mb' }));
 
+// multer kept only as fallback — client sends raw binary, not multipart
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 1024 } });
 
 /* ---------- Helpers ---------- */
@@ -122,15 +123,34 @@ app.put('/api/storage',    (req, res) => res.status(400).json({ error: 'Missing 
 app.delete('/api/storage', (req, res) => res.status(400).json({ error: 'Missing key' }));
 
 /* ============================================================
-   /api/media-file  (upload binaire multipart)
+   /api/media-file
+   Le client envoie le fichier en corps brut (raw binary) avec
+   Content-Type = type MIME du fichier + headers X-File-Name / X-Media-Kind.
+   Fallback multipart accepté pour les outils tiers.
 ============================================================ */
-app.post('/api/media-file', upload.single('file'), async (req, res, next) => {
+function rawOrMultipart(req, res, next){
+  const ct = String(req.headers['content-type'] || '');
+  if(ct.startsWith('multipart/')){
+    upload.single('file')(req, res, next);
+  } else {
+    express.raw({ type: '*/*', limit: '1gb' })(req, res, next);
+  }
+}
+
+app.post('/api/media-file', rawOrMultipart, async (req, res, next) => {
   try{
-    const buffer = req.file ? req.file.buffer : null;
+    // Corps brut (Buffer) ou champ multipart (req.file)
+    const buffer = Buffer.isBuffer(req.body) && req.body.length
+      ? req.body
+      : (req.file ? req.file.buffer : null);
+
     if(!buffer || !buffer.length) return res.status(400).json({ error: 'Empty file' });
 
-    const type    = (req.file.mimetype || req.query.type || 'application/octet-stream');
-    const rawName = req.headers['x-file-name'] || req.query.name || req.file.originalname || 'media';
+    const isMultipart = !!req.file;
+    const type    = (!isMultipart && req.headers['content-type'])
+      ? req.headers['content-type']
+      : (isMultipart ? req.file.mimetype : null) || req.query.type || 'application/octet-stream';
+    const rawName = req.headers['x-file-name'] || req.query.name || (isMultipart && req.file.originalname) || 'media';
     const name    = safeDecode(String(rawName));
     const kind    = String(
       req.headers['x-media-kind'] || req.query.kind ||
