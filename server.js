@@ -42,6 +42,9 @@ app.use('/api/media',            express.json({ limit: '500mb' }));
 // multer kept only as fallback — client sends raw binary, not multipart
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 1024 } });
 
+/* ---------- MongoDB warmup — ouvre la connexion dès le démarrage ---------- */
+db.getDb().catch(e => console.warn('ÉPI DB warmup warning:', e.message));
+
 /* ---------- Helpers ---------- */
 function safeDecode(part){
   try{ return decodeURIComponent(part || ''); }catch(e){ return part || ''; }
@@ -64,6 +67,21 @@ function cleanExt(name, type){
 function folderKeyForKind(kind){
   return kind === 'video' ? 'videos' : kind === 'audio' ? 'audios' : kind === 'document' ? 'documents' : 'images';
 }
+/* Sauvegarde avec une tentative de reconnexion si la topologie est fermée */
+async function saveMediaEntryWithRetry(id, entry){
+  try{
+    await db.setMediaEntry(id, entry);
+  }catch(e){
+    if(/topology was destroyed|topology is closed/i.test(e.message)){
+      // Laisser db.js recréer la connexion puis réessayer une fois
+      await new Promise(r => setTimeout(r, 300));
+      await db.setMediaEntry(id, entry);
+    } else {
+      throw e;
+    }
+  }
+}
+
 async function readTeacherPassword(){
   const doc = await db.readTeacherPassword();
   return String(doc && doc.password ? doc.password : DEFAULT_TEACHER_PASSWORD);
@@ -157,13 +175,15 @@ app.post('/api/media-file', rawOrMultipart, async (req, res, next) => {
       (String(type).startsWith('video/') ? 'video' : String(type).startsWith('audio/') ? 'audio' : 'image')
     ).replace(/[^a-z0-9_-]/gi, '') || 'media';
 
-    const id          = `${kind}_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`;
-    const ext         = cleanExt(name, type);
-    const folderKey   = folderKeyForKind(kind);
-    const filename    = `${folderKey}/${id}${ext}`;
-    const driveFileId = await drive.uploadMediaBuffer(buffer, `${id}${ext}`, type, folderKey);
+    const id        = `${kind}_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`;
+    const ext       = cleanExt(name, type);
+    const folderKey = folderKeyForKind(kind);
+    const filename  = `${folderKey}/${id}${ext}`;
 
-    await db.setMediaEntry(id, { kind, type, name, filename, driveId: driveFileId, savedAt: new Date().toISOString(), size: buffer.length });
+    const driveFileId = await drive.uploadMediaBuffer(buffer, `${id}${ext}`, type, folderKey);
+    const entry = { kind, type, name, filename, driveId: driveFileId, savedAt: new Date().toISOString(), size: buffer.length };
+    await saveMediaEntryWithRetry(id, entry);
+
     res.json({ ok: true, id, kind, url: `/api/media/${encodeURIComponent(id)}` });
   }catch(e){ next(e); }
 });
@@ -178,28 +198,35 @@ app.post('/api/media', async (req, res, next) => {
     const match   = dataUrl.match(/^data:([^;,]+)?(?:;[^,]*)?,(.*)$/s);
     if(!match) return res.status(400).json({ error: 'Invalid media data' });
 
-    const type    = payload.type || match[1] || 'application/octet-stream';
-    const isB64   = /;base64,/i.test(dataUrl.slice(0, dataUrl.indexOf(',') + 1));
-    const buffer  = isB64 ? Buffer.from(match[2] || '', 'base64') : Buffer.from(decodeURIComponent(match[2] || ''), 'utf8');
-    const kind    = String(payload.kind || (String(type).startsWith('video/') ? 'video' : String(type).startsWith('audio/') ? 'audio' : 'image')).replace(/[^a-z0-9_-]/gi, '') || 'media';
-    const id      = `${kind}_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`;
-    const ext     = cleanExt(payload.name, type);
-    const folderKey   = folderKeyForKind(kind);
-    const filename    = `${folderKey}/${id}${ext}`;
-    const driveFileId = await drive.uploadMediaBuffer(buffer, `${id}${ext}`, type, folderKey);
+    const type      = payload.type || match[1] || 'application/octet-stream';
+    const isB64     = /;base64,/i.test(dataUrl.slice(0, dataUrl.indexOf(',') + 1));
+    const buffer    = isB64 ? Buffer.from(match[2] || '', 'base64') : Buffer.from(decodeURIComponent(match[2] || ''), 'utf8');
+    const kind      = String(payload.kind || (String(type).startsWith('video/') ? 'video' : String(type).startsWith('audio/') ? 'audio' : 'image')).replace(/[^a-z0-9_-]/gi, '') || 'media';
+    const id        = `${kind}_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`;
+    const ext       = cleanExt(payload.name, type);
+    const folderKey = folderKeyForKind(kind);
+    const filename  = `${folderKey}/${id}${ext}`;
 
-    await db.setMediaEntry(id, { kind, type, name: String(payload.name || 'media'), filename, driveId: driveFileId, savedAt: new Date().toISOString(), size: buffer.length });
+    const driveFileId = await drive.uploadMediaBuffer(buffer, `${id}${ext}`, type, folderKey);
+    const entry = { kind, type, name: String(payload.name || 'media'), filename, driveId: driveFileId, savedAt: new Date().toISOString(), size: buffer.length };
+    await saveMediaEntryWithRetry(id, entry);
+
     res.json({ ok: true, id, kind, url: `/api/media/${encodeURIComponent(id)}` });
   }catch(e){ next(e); }
 });
 
-// GET /api/media/:id — stream depuis Drive
+// GET /api/media/:id — redirige vers Google Drive (dossier public)
+// Drive sert le fichier directement depuis ses serveurs, sans charge sur Vercel.
 app.get('/api/media/:id', async (req, res, next) => {
   try{
     const id   = safeDecode(String(req.params.id || '').split('/')[0]);
     const item = await db.getMediaEntry(id);
     if(!item || !item.driveId) return res.status(404).json({ error: 'Not found' });
-    await drive.streamMediaToResponse(item.driveId, req, res, item.type);
+
+    // export=view  → inline (images, vidéos, audio dans le navigateur)
+    // export=download → force le téléchargement (fallback si view échoue)
+    const driveUrl = `https://drive.google.com/uc?export=view&id=${encodeURIComponent(item.driveId)}`;
+    res.redirect(302, driveUrl);
   }catch(e){ next(e); }
 });
 

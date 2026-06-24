@@ -6,7 +6,6 @@
    binaires (images, audio, vidéo, documents).
 ========================================================= */
 const { google } = require('googleapis');
-const { Readable } = require('stream');
 
 const MEDIA_FOLDER_ID = process.env.GDRIVE_MEDIA_FOLDER_ID || '1n2l05AoekMOAjjRTMg1gJLjEV5A56umY';
 const MEDIA_FOLDERS = {
@@ -59,53 +58,10 @@ async function uploadMediaStream(stream, filename, mimeType, kind){
   return res.data.id;
 }
 
-async function getMediaFileMeta(driveId){
-  const res = await getClient().files.get({ fileId: driveId, fields: 'id,size,mimeType' });
-  return res.data;
-}
-
-async function streamMediaToResponse(driveId, req, res, type){
-  const drive  = getClient();
-  const meta   = await getMediaFileMeta(driveId);
-  const total  = Number(meta.size || 0);
-  const range  = req.headers.range;
-  const base   = {
-    'Content-Type':  type || meta.mimeType || 'application/octet-stream',
-    'Accept-Ranges': 'bytes',
-    'Cache-Control': 'public, max-age=3600'
-  };
-
-  if(range && total){
-    const m = String(range).match(/bytes=(\d*)-(\d*)/);
-    if(m){
-      let start = m[1] ? parseInt(m[1], 10) : 0;
-      let end   = m[2] ? parseInt(m[2], 10) : Math.min(total - 1, start + 1024 * 1024 - 1);
-      if(!Number.isFinite(start) || start < 0) start = 0;
-      if(!Number.isFinite(end)   || end >= total) end = total - 1;
-      if(start > end || start >= total){
-        res.writeHead(416, { 'Content-Range': `bytes */${total}` });
-        return res.end();
-      }
-      const driveRes = await drive.files.get(
-        { fileId: driveId, alt: 'media' },
-        { responseType: 'stream', headers: { Range: `bytes=${start}-${end}` } }
-      );
-      res.writeHead(206, { ...base, 'Content-Range': `bytes ${start}-${end}/${total}`, 'Content-Length': end - start + 1 });
-      driveRes.data.pipe(res);
-      return;
-    }
-  }
-
-  const driveRes = await drive.files.get({ fileId: driveId, alt: 'media' }, { responseType: 'stream' });
-  res.writeHead(200, { ...base, ...(total ? { 'Content-Length': total } : {}) });
-  driveRes.data.pipe(res);
-}
-
 module.exports = {
   MEDIA_FOLDER_ID,
   MEDIA_FOLDERS,
   uploadMediaBuffer,
   uploadMediaStream,
-  streamMediaToResponse,
   folderIdForKind
 };

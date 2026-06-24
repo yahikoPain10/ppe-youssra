@@ -1,12 +1,9 @@
 /* =========================================================
    ÉPI — Couche MongoDB
-   Remplace les fichiers JSON sur Google Drive pour :
-     • storage.json        → collection `storage`   (clé/valeur)
-     • media-index.json    → collection `media`     (index des fichiers Drive)
-     • teacher-password    → collection `config`    (document singleton)
-
-   Connexion : variable d'environnement MONGODB_URI
-   Base de données : "epi"  (modifiable via MONGODB_DB_NAME)
+   Collections :
+     storage  → clé/valeur générique   { _id: key, value: string }
+     media    → index des fichiers Drive { _id: mediaId, driveId, ... }
+     config   → singletons (mot de passe enseignant, etc.)
 ========================================================= */
 const { MongoClient } = require('mongodb');
 
@@ -16,38 +13,47 @@ const DB_NAME     = process.env.MONGODB_DB_NAME || 'epi';
 if(!MONGODB_URI) throw new Error('MONGODB_URI env var is required');
 
 /* ----------------------------------------------------------
-   Client singleton — une seule connexion réutilisée sur toute
-   la durée de vie du process (ou de la lambda Vercel "warm").
+   Connexion résiliente : on recrée le client si la topologie
+   est fermée (cas fréquent sur Vercel entre deux invocations
+   ou après un timeout réseau).
 ---------------------------------------------------------- */
 let _client = null;
-let _db     = null;
 
 async function getDb(){
-  if(_db) return _db;
+  // Vérifier si le client existant est encore utilisable
+  if(_client){
+    try{
+      // isConnected() est supprimé en driver v5+ ; on ping à la place
+      await _client.db('admin').command({ ping: 1 });
+    }catch(e){
+      // Topologie fermée ou timeout → forcer la recréation
+      try{ await _client.close(); }catch(_){}
+      _client = null;
+    }
+  }
+
   if(!_client){
     _client = new MongoClient(MONGODB_URI, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 10000
+      minPoolSize: 1,
+      serverSelectionTimeoutMS: 8000,
+      socketTimeoutMS: 30000,
+      connectTimeoutMS: 10000,
+      // Maintenir la connexion active entre les invocations Vercel
+      heartbeatFrequencyMS: 10000,
     });
     await _client.connect();
   }
-  _db = _client.db(DB_NAME);
-  return _db;
+
+  return _client.db(DB_NAME);
 }
 
-/* ----------------------------------------------------------
-   Collection helpers
----------------------------------------------------------- */
 async function col(name){ return (await getDb()).collection(name); }
 
 /* ==========================================================
-   STORAGE  (remplace storage.json)
-   Schéma : { _id: key<string>, value: string }
-   • _id est directement la clé applicative pour des lookups O(1)
+   STORAGE  { _id: key, value: string }
 ========================================================== */
 
-/** Retourne tout le store sous forme { key: value, ... } */
 async function readStorage(){
   const c    = await col('storage');
   const docs = await c.find({}, { projection: { _id: 1, value: 1 } }).toArray();
@@ -56,51 +62,40 @@ async function readStorage(){
   return out;
 }
 
-/** Lit une seule clé → string | null */
 async function getStorageKey(key){
   const c   = await col('storage');
   const doc = await c.findOne({ _id: key }, { projection: { value: 1 } });
   return doc ? doc.value : null;
 }
 
-/** Écrit une clé (upsert) */
 async function setStorageKey(key, value){
   const c = await col('storage');
   await c.updateOne({ _id: key }, { $set: { value: String(value ?? '') } }, { upsert: true });
 }
 
-/** Supprime une clé */
 async function deleteStorageKey(key){
   const c = await col('storage');
   await c.deleteOne({ _id: key });
 }
 
 /* ==========================================================
-   MEDIA INDEX  (remplace media-index.json)
-   Schéma : { _id: mediaId<string>, kind, type, name,
-              filename, driveId, savedAt, size }
+   MEDIA INDEX  { _id: mediaId, driveId, kind, type, name, ... }
 ========================================================== */
 
-/** Retourne l'index complet { id: {...}, ... } */
 async function readMediaIndex(){
   const c    = await col('media');
   const docs = await c.find({}).toArray();
   const out  = Object.create(null);
-  docs.forEach(d => {
-    const { _id, ...rest } = d;
-    out[_id] = { id: _id, ...rest };
-  });
+  docs.forEach(({ _id, ...rest }) => { out[_id] = { id: _id, ...rest }; });
   return out;
 }
 
-/** Insère ou met à jour une entrée dans l'index */
 async function setMediaEntry(id, entry){
   const c = await col('media');
-  const { id: _ignored, ...fields } = entry; // éviter de dupliquer id dans les champs
+  const { id: _ignored, ...fields } = entry;
   await c.updateOne({ _id: id }, { $set: fields }, { upsert: true });
 }
 
-/** Récupère une entrée par id */
 async function getMediaEntry(id){
   const c   = await col('media');
   const doc = await c.findOne({ _id: id });
@@ -110,8 +105,7 @@ async function getMediaEntry(id){
 }
 
 /* ==========================================================
-   CONFIG  (mot de passe enseignant, etc.)
-   Schéma : { _id: 'teacher_password', password: string, updatedAt: string }
+   CONFIG  { _id: 'teacher_password', password, updatedAt }
 ========================================================== */
 
 async function readTeacherPassword(){
@@ -126,32 +120,20 @@ async function writeTeacherPassword(data){
 }
 
 /* ----------------------------------------------------------
-   Bootstrap : index MongoDB pour les performances
+   Index — exécuté une fois au démarrage, erreurs non fatales
 ---------------------------------------------------------- */
-async function ensureIndexes(){
+(async () => {
   try{
     const db = await getDb();
-    // storage : _id est déjà l'index primaire, rien à faire
-    // media : index sur driveId pour des lookups inverses éventuels
     await db.collection('media').createIndex({ driveId: 1 }, { sparse: true });
   }catch(e){
-    console.warn('ÉPI DB: impossible de créer les index', e.message);
+    console.warn('ÉPI DB: index creation warning:', e.message);
   }
-}
-ensureIndexes();
+})();
 
 module.exports = {
   getDb,
-  // storage
-  readStorage,
-  getStorageKey,
-  setStorageKey,
-  deleteStorageKey,
-  // media index
-  readMediaIndex,
-  setMediaEntry,
-  getMediaEntry,
-  // config
-  readTeacherPassword,
-  writeTeacherPassword
+  readStorage, getStorageKey, setStorageKey, deleteStorageKey,
+  readMediaIndex, setMediaEntry, getMediaEntry,
+  readTeacherPassword, writeTeacherPassword
 };
