@@ -6,6 +6,7 @@
    binaires (images, audio, vidéo, documents).
 ========================================================= */
 const { google } = require('googleapis');
+const { Readable } = require('stream');
 
 const MEDIA_FOLDER_ID = process.env.GDRIVE_MEDIA_FOLDER_ID || '1n2l05AoekMOAjjRTMg1gJLjEV5A56umY';
 const MEDIA_FOLDERS = {
