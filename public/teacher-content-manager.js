@@ -10,6 +10,9 @@
 (function(){
   'use strict';
 
+  // Booting flag: true during the init sequence to prevent premature persistCustomUnits calls
+  var _epiBooting = false;
+
   const STORE_PREFIX = 'epi_v170_unit_content_';
   const CUSTOM_UNITS_KEY = 'epi_v175_custom_units';
   const DELETED_UNITS_KEY = 'epi_v191_deleted_units';
@@ -683,7 +686,10 @@
         }
       }
     });
-    persistCustomUnits();
+    // Only persist after boot is complete — during init, UNITS may not yet
+    // include the custom units (ensureCustomUnits runs just before), so
+    // calling persistCustomUnits here would overwrite MongoDB with an empty list.
+    if(!_epiBooting) persistCustomUnits();
   }
 
   function rowsResults(){
@@ -2024,9 +2030,13 @@
     document.head.appendChild(style);
   }
 
+  // Boot sequence: set flag so applyContentToUnits does NOT call persistCustomUnits
+  // while UNITS is still being hydrated from storage.
+  _epiBooting = true;
   ensureCustomUnits();
   injectStyle();
   applyContentToUnits();
+  _epiBooting = false;
   // L’espace élève n’est plus modifié par le gestionnaire professeur.
 
   renderResultsPage = function(){ renderTeacherArea(activeUnitId || (units()[0] && units()[0].id), activeTab || 'general'); };

@@ -21,6 +21,17 @@
     'epi_teacher_added_users',
     'epi_integration_submissions'
   ]);
+
+  // Keys that hold structural data (unit stubs, deleted list) must NEVER be
+  // debounced — a rapid sequence of writes must all reach the server in order,
+  // not collapse into the last one (which could be an empty array overwriting
+  // a just-created unit).
+  const IMMEDIATE_WRITE_KEYS = new Set([
+    'epi_v175_custom_units',
+    'epi_v183_custom_units_visible',
+    'epi_v181_custom_units_visible',
+    'epi_v191_deleted_units'
+  ]);
   const SERVER_KEY_PREFIXES = [
     'epi_v170_unit_content_',
     'epi_v169_teacher_questions_'
@@ -115,6 +126,16 @@
   ---------------------------------------------------------- */
   function scheduleWrite(key, value){
     cache[key] = value;
+
+    if(IMMEDIATE_WRITE_KEYS.has(key)){
+      // Structural keys: cancel any pending debounce and write immediately.
+      // This prevents a rapid persist([]) from overwriting a just-created unit stub.
+      if(writeQueue[key]){ clearTimeout(writeQueue[key].timer); delete writeQueue[key]; }
+      fetchJson('PUT', '/api/storage/' + encodeURIComponent(key), { value })
+        .catch(err => console.warn('ÉPI: écriture immédiate échouée pour', key, err));
+      return;
+    }
+
     if(writeQueue[key]) clearTimeout(writeQueue[key].timer);
     writeQueue[key] = {
       value,
