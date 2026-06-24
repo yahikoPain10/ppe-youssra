@@ -215,18 +215,24 @@ app.post('/api/media', async (req, res, next) => {
   }catch(e){ next(e); }
 });
 
-// GET /api/media/:id — redirige vers Google Drive (dossier public)
-// Drive sert le fichier directement depuis ses serveurs, sans charge sur Vercel.
+// GET /api/media/:id
+// Images  → redirect to drive.google.com/thumbnail (works publicly, no auth)
+// Audio/Video/Docs → stream through server (no public Drive URL works for these)
 app.get('/api/media/:id', async (req, res, next) => {
   try{
     const id   = safeDecode(String(req.params.id || '').split('/')[0]);
     const item = await db.getMediaEntry(id);
     if(!item || !item.driveId) return res.status(404).json({ error: 'Not found' });
 
-    // export=view  → inline (images, vidéos, audio dans le navigateur)
-    // export=download → force le téléchargement (fallback si view échoue)
-    const driveUrl = `https://drive.google.com/uc?export=view&id=${encodeURIComponent(item.driveId)}`;
-    res.redirect(302, driveUrl);
+    if(item.kind === 'image'){
+      // thumbnail endpoint still works publicly as of 2024, no cookies needed
+      // sz=w2000 gives full resolution up to 2000px (increase if needed)
+      const url = `https://drive.google.com/thumbnail?id=${encodeURIComponent(item.driveId)}&sz=w2000`;
+      return res.redirect(302, url);
+    }
+
+    // Audio, video, documents: stream through our server
+    await drive.streamMediaToResponse(item.driveId, req, res, item.type);
   }catch(e){ next(e); }
 });
 
