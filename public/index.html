@@ -13,65 +13,36 @@
   <noscript>Cette application nécessite JavaScript.</noscript>
   <div id="epiLoadingScreen" class="epi-loader" aria-live="polite">
     <div class="epi-loader-card">
-      <strong>Chargement de l'application</strong>
+      <strong>Chargement de l’application</strong>
       <span>Préparation des espaces élève et professeur...</span>
       <div class="epi-loader-bar"><span></span></div>
     </div>
   </div>
   <div id="app"></div>
-
-  <!-- performance-boost and server-storage load immediately (no app code yet) -->
   <script src="performance-boost.js"></script>
   <script src="server-storage.js"></script>
-
-  <!-- All other scripts are injected AFTER the storage preload resolves,
-       so every localStorage.getItem() call hits a warm cache, never the network. -->
-  <script>
-    (function(){
-      var APP_SCRIPTS = [
-        'app.js',
-        'content-data.js',
-        'dynamic-app.js',
-        'teacher-content-manager.js',
-        'media-import-fix.js',
-        'media-preview-upload-fix.js',
-        'interface-stability-fix.js',
-        'content-storage-fix.js',
-        'visual-content-fix.js',
-        'student-interface-fix.js',
-        'exam-remediation-fix.js',
-        'auth-buttons-fix.js',
-        'auth-student-access.js',
-        'clean-components-interface.js',
-        'student-dropdown-about-menu.js',
-        'back-button-about-layout.js',
-        'pages-styles-back-navigation.js',
-        'styles-menu-back-fixes.js',
-        'shortcut-true-false-game.js',
-        'shortcut-admin-editor.js',
-        'professional-interface-buttons-check.js',
-        'corrections-finales.js',
-        'integration-file-submissions.js'
-      ];
-
-      function loadScriptsSequentially(scripts, done){
-        if(!scripts.length) return done();
-        var s = document.createElement('script');
-        s.src = scripts[0];
-        s.onload = function(){ loadScriptsSequentially(scripts.slice(1), done); };
-        s.onerror = function(){ loadScriptsSequentially(scripts.slice(1), done); };
-        document.body.appendChild(s);
-      }
-
-      // Wait for the storage preload then boot the app
-      var preloadReady = (window.EPI_SERVER_STORAGE && window.EPI_SERVER_STORAGE.preload)
-        ? window.EPI_SERVER_STORAGE.preload()
-        : Promise.resolve();
-
-      preloadReady.then(function(){
-        loadScriptsSequentially(APP_SCRIPTS, function(){ /* all scripts loaded */ });
-      });
-    })();
-  </script>
+  <script src="app.js"></script>
+  <script src="content-data.js"></script>
+  <script src="dynamic-app.js"></script>
+  <script src="teacher-content-manager.js"></script>
+  <script src="media-import-fix.js"></script>
+  <script src="media-preview-upload-fix.js"></script>
+  <script src="interface-stability-fix.js"></script>
+  <script src="content-storage-fix.js"></script>
+  <script src="visual-content-fix.js"></script>
+  <script src="student-interface-fix.js"></script>
+  <script src="exam-remediation-fix.js"></script>
+  <script src="auth-buttons-fix.js"></script>
+  <script src="auth-student-access.js"></script>
+  <script src="clean-components-interface.js"></script>
+  <script src="student-dropdown-about-menu.js"></script>
+  <script src="back-button-about-layout.js"></script>
+  <script src="pages-styles-back-navigation.js"></script>
+  <script src="styles-menu-back-fixes.js"></script>
+  <script src="shortcut-true-false-game.js"></script>
+  <script src="shortcut-admin-editor.js"></script>
+  <script src="professional-interface-buttons-check.js"></script>
+  <script src="corrections-finales.js"></script>
+  <script src="integration-file-submissions.js"></script>
 </body>
 </html>
